@@ -1,43 +1,54 @@
 import React, { useState, useEffect} from 'react';
-import ChatRoom from './components/ChatRoom.js'
-import io from 'socket.io-client';
-//import { socket } from './socket';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
+import ReactDOM from 'react-dom';
+import LoginPage  from './pages/LoginPage';
+import ChatPage  from './pages/ChatPage';
+import {socket} from './context/socket';
 import './App.css';
 import './chat.css';
 
 
-//const socket = socketIO.connect('http:://localhost:7000');
-//console.log(socket);
-const newSocket = io("http://localhost:7000");
 function App() {
-  
-   // const [messages, setMessages] = useState([]);
-    const [socket, setSocket] = useState(null);
+    const [isConnected, setIsConnected] = useState(false);
+    const [users, setUsers] = useState([]);
+    let { userId } = useParams();
+    function onConnect() {
+      setIsConnected(true);
+    }
 
-    useEffect(() => {
-      // connect to WebSocket server
-      
-     /* setSocket(newSocket);
-  
-      newSocket.on('connect', () => {
-        console.log('Connected to server', newSocket.id);
-      });
-      newSocket.on("notification", (notification) => {
-        console.log("notification: " + notification)
-        //setNotifications([...notifications, notification]);
-      });
-      newSocket.on('disconnect', () => {
-        console.log('Disconnected from server');
-      });*/
-    }, []);
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    socket.on('connect', onConnect);
+    if(isConnected){
+      console.log("client socket_id" + socket.id)
+      socket.on('users', (data) => setUsers([...users, data]));
+      console.log("users: ")
+      console.log(users)
+      console.log("socket_id: " + socket.id)
+    }else{
+      console.log("is not connected")
+    }
     
+    
+    
+    socket.on('disconnect', onDisconnect);
+    useEffect(() => {
+      
+    }, []);
+    /*return () => {
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+    };*/
     return (
-      <div className="chat">
-        <div className="container">
-          <div><ChatRoom person={{ name: 'Lin Lanying', imageId: '1bX5QH6' }} /></div>
-          <div><ChatRoom person={{ name: 'John Smith', imageId: '1bX5QH6' }} /></div>
-        </div>
-        </div>
+      
+      <BrowserRouter>
+      <Routes>
+          <Route path="/" element={<LoginPage/> } />
+          <Route path="/chat/:user_id" element={<ChatPage/> } />
+      </Routes>
+    </BrowserRouter>
     );
 }
 
