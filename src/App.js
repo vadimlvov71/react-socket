@@ -23,8 +23,8 @@ function App() {
     socket.on('connect', onConnect);
     if(isConnected){
       console.log("client socket_id" + socket.id)
-      socket.on('users', (data) => setUsers([...users, data]));
-      console.log("users: ")
+      socket.on('userList', (data) => setUsers([...users, data]));
+      console.log("userList: ")
       console.log(users)
       console.log("socket_id: " + socket.id)
     }else{
@@ -45,7 +45,7 @@ function App() {
       
       <BrowserRouter>
       <Routes>
-          <Route path="/" element={<LoginPage/> } />
+          <Route path="/" element={<LoginPage usersList={users}/> } />
           <Route path="/chat/:user_id" element={<ChatPage/> } />
       </Routes>
     </BrowserRouter>
