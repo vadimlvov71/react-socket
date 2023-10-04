@@ -23,9 +23,9 @@ function App() {
     socket.on('connect', onConnect);
     if(isConnected){
       console.log("client socket_id" + socket.id)
-      socket.on('userList', (data) => setUsers([...users, data]));
+      /*socket.on('userList', (data) => setUsers([...users, data]));
       console.log("userList: ")
-      console.log(users)
+      console.log(users)*/
       console.log("socket_id: " + socket.id)
     }else{
       console.log("is not connected")
@@ -43,10 +43,10 @@ function App() {
     };*/
     return (
       
-      <BrowserRouter>
+      <BrowserRouter forceRefresh={true}>
       <Routes>
           <Route path="/" element={<LoginPage usersList={users}/> } />
-          <Route path="/chat/:user_id" element={<ChatPage/> } />
+          <Route exact path="/chat/:user_id"  element={<ChatPage /> } />
       </Routes>
     </BrowserRouter>
     );

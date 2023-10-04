@@ -163,4 +163,7 @@
     solid     /* style */
     rgb(0, 204, 255);  /* color */
 }
+.avatar{
+  width:88px;
+}
 

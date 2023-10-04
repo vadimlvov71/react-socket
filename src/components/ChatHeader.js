@@ -20,6 +20,7 @@ const ChatHeader = ({ user }) => {
       <>
       <header className="chat__mainHeader">
         <p>account of: {user.name}</p>
+        <div><img className="avatar" src={"/images/" + user.image}/></div>
         <button className="leaveChat__btn" >
           LEAVE CHAT
         </button>

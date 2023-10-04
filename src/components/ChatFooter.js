@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-//import {socket} from '../context/socket';
+import {socket} from '../context/socket';
 
 //const newSocket = io("http://localhost:7000");
 const ChatFooter = ({ user}) => {
@@ -38,10 +38,10 @@ const handleSendMessage = (e) => {
     
     // send message to WebSocket server
     console.log("sending: ")
-    /*socket.emit("message", {
+    socket.emit("message", {
       text: message,
-      user_id: user.user_id
-    });*/
+      //user_id: user.user_id
+    });
     setMessage("");
   }
 };
