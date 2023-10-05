@@ -1,27 +1,40 @@
 import React, { useState, useEffect} from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import {socket} from '../context/socket';
+//import {socket} from '../context/socket';
 
-const LoginPage = () => {
+const LoginPage = (users) => {
   //const [text, setText] = React.useState("waiting...");
-  const [users, setUsers] = useState([]);
+ // const [users, setUsers] = useState([]);
   let { userId } = useParams();
-
-  useEffect(() => {
+ 
+  /*useEffect(() => {
     socket.on('userList', (data) => {
       console.log('data')
       console.log(data)
       setUsers([...users, data])
     });
+    console.log("users1111: ");
+    console.log(users.users[0]);
+  }, []);*/
+  /*useEffect(() => {
+    fetch('http://localhost:7000/test')
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
+        setUsers([...users, data])
+    })
+    .catch(error => {
+      // Handle the error
+    });
 
-  }, [users]);
+}, []);*/
   /*return () => {
     socket.off('serList');
   };*/
   function renderObject(){
     return  (
-    Object.entries(users).map(([key, user], index) => {
+    Object.entries(users.users).map(([key, user], index) => {
       return Object.entries(user).map(([key1, value], i) => {
 
         return (

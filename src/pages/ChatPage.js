@@ -9,7 +9,7 @@ import {socket} from '../context/socket';
 
 
 const ChatPage = () => {
-    const [users, setUsers] = useState([]);
+    const [chatUsers, setChatUsers] = useState([]);
     const [addressee, setAddressee] = useState([]);
     const [messages, setMessages] = useState([]);
     const [userCurrent, setUserCurrent] = useState('');
@@ -21,93 +21,60 @@ const ChatPage = () => {
    // const [usersObject, setUsersObject] = useState({});
     const userObj = {};
     const usersObject = {}
-    //const lastMessageRef = useRef(null);
-   
-/*
-    useEffect(() => {
+    const [users, setUsers] = useState([]);
+    
+
+    /*useEffect(() => {
         socket.on('messageResponse', (data) => setMessages([...messages, data]));
         console.log("messageResponse: ")
         console.log(messages)
 
-    }, []);
+    //}, []);
+*/
+//const [users, setUsers] = useState([]);
+    //const [load, setLoad] = useState(false);
 
-    */
-   
-    /*console.log('check 1', socket.connected);
-    socket.on('connect', function() {
-      console.log('check 2', socket.connected);
-    });*/
-   // let { userId } = useParams();
-    //socket.connect(); 
+  useEffect(() => {
+      fetch('http://localhost:7000/get_users')
+      .then(response => response.json())
+      .then(data => {
+          //console.log('data');
+          //console.log(data);
+          setUsers([...users, data]);
+          setLoad(true);
+      })
+      .catch(error => {
+        // Handle the error
+      });
+  
+  }, []);
+
     //socket.connect();
-    useEffect(() => {
-       // const socket = io.connect('http://localhost:7000'); 
+
+    if(load){
+        Object.entries(users).map(([key, user], index) => {
+            Object.entries(user).map(([key1, value], i) => {
+                //console.log('value');
+                //console.log(value);
+                usersObject[value.user_id] = value;
+            })
+          }) 
         
-        socket.on('userList', (data) => {
-            console.log('data!!!!')
-            console.log(data)
-            setUsers([...users, data])
-            setLoad(true);
-            socket.disconnect(); 
-        });
-      //return () => socket.disconnect();
-    }, [users]);
-    //useEffect(() => {
-        if(load){
-    
-            //setUsersObject([usersObject, users[0]]);
-            Object.entries(users).map(([key, user], index) => {
-                Object.entries(user).map(([key1, value], i) => {
-                    console.log('value');
-                    console.log(value);
-                    usersObject[value.user_id] = value;
-                })
-              }) 
-            /*Object.entries(users).map(([key, user], index) => {
-                userObj.name = user[user_id].firstName + " " + user[user_id].lastName;
-                userObj.image = user[user_id].image;
-                    //
-                    console.log('user_id', user[1].firstName);
-                
-            })*/
-            userObj.name = users[0][user_id].firstName + " " + users[0][user_id].lastName;
-            userObj.image = users[0][user_id].image;
-            console.log('aaaaaa');
-            console.log(users[0][3]);
-            console.log('usersObject');
-            //console.log(usersObject);
-            //setUser(obj) 
-        }
+        userObj.name = users[0][user_id].firstName + " " + users[0][user_id].lastName;
+        userObj.image = users[0][user_id].image;
+        userObj.user_id = users[0][user_id].user_id;
+    }else{
+       console.log("loading");
+    }
         
-   // }, []);
+
     //socket.disconnect();
     console.log("chatPage" + user_id)
-    //socket.connect();
-    //console.log("client socket_id" + socket.id)
-    /*useEffect(() => {
-        //socket.connect();
-        getUser(); 
-        //socket.on('userResponse', (data) => setUserCurrent([userCurrent, data]));
-        //console.log("userResponse: ")
-        //console.log(userCurrent);
-        return () => {
-            //socket.off('connect', onConnect);
-            //socket.off('disconnect', onDisconnect);
-            //socket.off('foo', onFooEvent);
-          };
-    }, []);*/
     const handleGetAddressee = (addressee_id) => {
-        setTxt(<p> 'Lorem ipsum dummy text blabla.' </p>);
+        setAddressee("Your Addressee: " + users[0][addressee_id].firstName + " " + users[0][addressee_id].lastName)
        // e.preventDefault();
         console.log("addressee: " + addressee_id)
-        /*if (message.trim() !== "") {
-          
-          // send message to WebSocket server
-         
-         
-          setMessage("");
-        }*/
-      };
+    };
     const getUser = () => {
         console.log('user_id' + user_id);
           // send user_id to WebSocket server
@@ -125,26 +92,8 @@ const ChatPage = () => {
       <ChatBar users={usersObject} getAddressee={handleGetAddressee}/>
         <div className="chat__main">
         <ChatHeader user={userObj} />
-        <div>{txt}</div>
-                {/*This shows messages sent from you*/}
-                {messages.map((message) =>
-                    message.user_id === user.user_id ? (
-                        <div className="message__chats" key={message.id}>
-                        <p className="sender__name">You</p>
-                        <div className="message__sender">
-                            <p>{message.text}</p>
-                        </div>
-                        </div>
-                    ) : (
-                        <div className="message__chats" key={message.id}>
-                        <p className="sender_name_from">{message.firstName} {message.lastName}</p>
-                        <div className="message__recipient">
-                            <p>{message.text}</p>
-                        </div>
-                        </div>
-                    )
-                )}            
-                <ChatFooter user={{ ...user }}/>
+        <div>{addressee}</div>
+        {load ? <ChatFooter user={userObj}/> : ""}
             </div>
         </div>
       </>

@@ -2,19 +2,15 @@ import React, { useState, useEffect } from 'react';
 //import {socket} from '../context/socket';
 
 const ChatHeader = ({ user }) => {
-    const [messages, setMessages] = useState([]);
-    const [typingStatus, setTypingStatus] = useState('');
+   
    
 
-    useEffect(() => {
+    //useEffect(() => {
         //socket.on('messageResponse', (data) => setMessages([...messages, data]));
-        console.log("messageResponse: ")
-        console.log(messages)
+       // console.log("messageResponse: ")
+        //console.log(messages)
 
-    }, []);
-
-   
-
+    //}, []);
 
     return (
       <>
