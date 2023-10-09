@@ -4,18 +4,10 @@ import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import {socket} from '../context/socket';
 
 const ChatBar = ({users, getAddressee}) => {
-  //const [users, setUsers] = useState([]);
+  const [selected_user_id, setSelectedUserId] = React.useState()
   let { userId } = useParams();
-  console.log('!!!!!!!!!!!!!!!!!')
-    console.log(users)
-  /*useEffect(() => {
-    socket.on('userList', (data) => {
-      console.log('data')
-      console.log(data)
-      setUsers([...users, data])
-    });
-
-  }, [users]);*/
+const [showResults, setShowResults] = React.useState(false)
+  
   function renderObject(){
      
     return  (
@@ -23,13 +15,15 @@ const ChatBar = ({users, getAddressee}) => {
       //return Object.entries(user).map(([key1, value], i) => {
 
         return (
-            <div key={key}>
+            <div className="avatar-wrapper" key={key}>
               <li>
+                
               <button onClick={() => getAddressee(value.user_id)}>
                   <div>{value.firstName} {value.lastName}</div>
                   <div><img className="avatar" src={"/images/" + value.image}/></div>
                   
                 </button>
+             
               </li>
             </div>
         )
@@ -42,7 +36,7 @@ const ChatBar = ({users, getAddressee}) => {
     <div className="chat__sidebar">
       <h2>Test Chat from Vadim</h2>
       <div>
-        <h4 className="chat__header">SELECT A USER to log in:</h4>
+        <h4 className="chat__header">SELECT A USER to chat:</h4>
         <div className="chat__users">
           <ul>{users ? renderObject() : "oooooo"}</ul>
         </div>

@@ -24,3 +24,4 @@ yarn-error.log*
 
 src/pages/ChatPageDeveloper.js
 src/pages/LoginPageDeveloper.js
+src/components/ChatFooterDeveloper.js

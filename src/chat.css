@@ -166,4 +166,10 @@
 .avatar{
   width:88px;
 }
+.avatar-wrapper{
+  margin:5px 0;
+}
+.avatar-wrapper div {
+  padding:5px 10px;
+}
 

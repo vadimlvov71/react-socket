@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import ChatFooter from '../components/ChatFooter';
+import ChatSocket from '../components/ChatSocket';
 import ChatBar from '../components/ChatBar';
 import ChatHeader from '../components/ChatHeader';
 import io from 'socket.io-client';
-import {useSearchParams, useParams} from 'react-router-dom';
+import {useNavigate, useSearchParams, useParams} from 'react-router-dom';
 import {socket} from '../context/socket';
 
 
@@ -12,27 +12,19 @@ const ChatPage = () => {
     const [chatUsers, setChatUsers] = useState([]);
     const [addressee, setAddressee] = useState([]);
     const [messages, setMessages] = useState([]);
-    const [userCurrent, setUserCurrent] = useState('');
+    const [receiverSelected, setReceiverSelected] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const { user_id } = useParams();
     const [load, setLoad] = useState(false);
     const [user, setUser] = useState({});
     const [txt, setTxt] = useState("");
-   // const [usersObject, setUsersObject] = useState({});
+    const navigate = useNavigate();
     const userObj = {};
     const usersObject = {}
     const [users, setUsers] = useState([]);
+    const socketState = useRef()
     
-
-    /*useEffect(() => {
-        socket.on('messageResponse', (data) => setMessages([...messages, data]));
-        console.log("messageResponse: ")
-        console.log(messages)
-
-    //}, []);
-*/
-//const [users, setUsers] = useState([]);
-    //const [load, setLoad] = useState(false);
+    console.log("chatPage" + user_id)
 
   useEffect(() => {
       fetch('http://localhost:7000/get_users')
@@ -56,7 +48,10 @@ const ChatPage = () => {
             Object.entries(user).map(([key1, value], i) => {
                 //console.log('value');
                 //console.log(value);
-                usersObject[value.user_id] = value;
+                if(value.user_id != user_id){
+                  usersObject[value.user_id] = value;
+                }
+                
             })
           }) 
         
@@ -69,32 +64,35 @@ const ChatPage = () => {
         
 
     //socket.disconnect();
-    console.log("chatPage" + user_id)
+    const  leaveChat = (user_id) => {
+      console.log("leaveChat: " + user_id);
+      navigate('/', { replace: true });
+      socketState.current()
+    };
+   
     const handleGetAddressee = (addressee_id) => {
         setAddressee("Your Addressee: " + users[0][addressee_id].firstName + " " + users[0][addressee_id].lastName)
-       // e.preventDefault();
-        console.log("addressee: " + addressee_id)
+        console.log("addressee: " + addressee_id);
+        setReceiverSelected(true);
     };
-    const getUser = () => {
-        console.log('user_id' + user_id);
-          // send user_id to WebSocket server
-          console.log("sending user: ")
-          /*socket.emit("getUserById", {
-            user_id: user_id
-          });*/
-    };
-   // getUser(); 
-
+ 
 
     return (
       <>
       <div className="chat App-window">
       <ChatBar users={usersObject} getAddressee={handleGetAddressee}/>
         <div className="chat__main">
-        <ChatHeader user={userObj} />
+          
+            <ChatHeader user={userObj} leaveChat={leaveChat}/>
+          
         <div>{addressee}</div>
-        {load ? <ChatFooter user={userObj}/> : ""}
-            </div>
+        {receiverSelected ? (
+          load ? <ChatSocket socketState={socketState} user={userObj}/> : ""
+            ) : (
+              " select a man to chat with"
+            )
+        }
+          </div>
         </div>
       </>
     );

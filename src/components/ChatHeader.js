@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 //import {socket} from '../context/socket';
 
-const ChatHeader = ({ user }) => {
+const ChatHeader = ({ user, leaveChat }) => {
    
    
 
@@ -17,7 +17,7 @@ const ChatHeader = ({ user }) => {
       <header className="chat__mainHeader">
         <p>account of: {user.name}</p>
         <div><img className="avatar" src={"/images/" + user.image}/></div>
-        <button className="leaveChat__btn" >
+        <button onClick={() => leaveChat(user.user_id)} className="leaveChat__btn" >
           LEAVE CHAT
         </button>
       </header>

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef} from 'react';
 import io from 'socket.io-client';
 import {socket} from '../context/socket';
 
-//const newSocket = io("http://localhost:7000");
-const ChatFooter = ({ user}) => {
+const ChatSocket = ({socketState, user}) => {
 
   const [isConnected, setIsConnected] = useState(false);
   const [message, setMessage] = useState("");
@@ -12,8 +11,6 @@ const ChatFooter = ({ user}) => {
   const [socketId, setSocketId] = useState("");
   
  
-
-//const socket = io("http://localhost:7000");
 socket.connect();
 socket.on('connect', () => {
   console.log("socket.id::: " + socket.id);
@@ -26,46 +23,28 @@ socket.on('connect', () => {
 });
 //socket.disconnect()
 
-useEffect(() => {
- // 
-  
 
-  //socket.on('connect', onConnect);
-  /*if(isConnected){
-    console.log("client socket_id: " + socket.id);
-    setSocketId(socket.id);
-  }else{
-    console.log("is not connected")
-  }*/
+function socketDisconnect(){
+  console.log("socket is disconnecting:" + socket.id)
+  socket.disconnect();
+  console.log("socketDisconnect:" + socket.id)
+}
+
+useEffect(() => {
+ 
+    socketState.current = socketDisconnect
+
     socket.on('messageResponse', (data) => setMessages([...messages, data]));
     console.log("messageResponse: ")
     console.log(messages)
-    //setSocket(socket);
-
-    // set up event listeners for incoming messages
-    /*
-    newSocket.on('connect', () => {
-      console.log('Connected to server', newSocket.id);
-    });
-    newSocket.on("notification", (notification) => {
-      console.log("notification: " + notification)
-      // setNotifications([...notifications, notification]);
-    });*/
-//socket.on('disconnect', onDisconnect);
+    
     // clean up on unmount
 return () => {
   // при размонтировании компонента выполняем отключение сокета
   socket.disconnect()
 }
 }, [messages]);
-//console.log("userFooter: ")
-//console.log(user)
-//socket.on('disconnect', onDisconnect);
 
-    /*return () => {
-      socket.off('connect', onConnect);
-      socket.off('disconnect', onDisconnect);
-    };*/
 const handleSendMessage = (e) => {
   e.preventDefault();
   if (message.trim() !== "") {
@@ -79,7 +58,6 @@ const handleSendMessage = (e) => {
       socketId: socketId
     });
     setMessage("");
-    //onChange={(e) => setMessage(e.target.value)
   }
 };
   return (
@@ -116,4 +94,4 @@ const handleSendMessage = (e) => {
   );
 };
 
-export default ChatFooter;
+export default ChatSocket;
